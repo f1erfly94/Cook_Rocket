@@ -1,0 +1,10 @@
+{
+  "extends": [
+    "next/core-web-vitals"
+  ],
+  "rules": {
+    // Add or modify any ESLint rules here
+    "no-unused-vars": "warn",
+    "semi": ["error", "always"]
+  }
+}
