@@ -2,6 +2,7 @@ import React from 'react';
 import {Container} from "@/components/shared/container";
 import {cn} from "@/lib/utils";
 import Image from 'next/image';
+import {Button} from "@/components/ui/button";
 
 
 interface Props {
@@ -13,7 +14,7 @@ const Header: React.FC<Props> = ({className}) => {
         <header className={cn('border border-b',className)}>
             <Container className="flex items-center justify-between  py-8 ">
 
-                <div className="flex items-center gap4">
+                <div className="flex items-center gap-4">
                     <Image src="/logo.png" alt="logo" width={100} height={100} />
 
                     <div>
@@ -21,6 +22,12 @@ const Header: React.FC<Props> = ({className}) => {
                         <p className="text-sm text-gray-400 leading-3">Таких ти ще не їв</p>
 
                     </div>
+
+
+
+                <div className="flex items-center gap-3">
+                </div>
+                <Button>Увійти</Button>
                 </div>
             </Container>
 
