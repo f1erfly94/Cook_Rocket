@@ -2,6 +2,7 @@ import type {Metadata} from "next";
 import {Nunito} from "next/font/google";
 import "./globals.css";
 import Header from "@/components/shared/header";
+import Footer from "@/components/shared/footer";
 
 
 const nunito = Nunito({
@@ -27,6 +28,8 @@ export default function RootLayout({
             <Header/>
             {children}
         </main>
+        <Footer/>
+
         </body>
         </html>
     );

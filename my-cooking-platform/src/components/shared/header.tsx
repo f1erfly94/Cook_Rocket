@@ -2,7 +2,6 @@ import React from 'react';
 import {Container} from "@/components/shared/container";
 import {cn} from "@/lib/utils";
 import Image from 'next/image';
-import {Button} from '../ui';
 import Link from "next/link";
 import {
     Menubar,
@@ -13,6 +12,8 @@ import {
     MenubarShortcut,
     MenubarTrigger
 } from "@/components/ui/menubar";
+import Modal from "@/components/ui/modal";
+import ModalLogin from "@/components/ui/modalLogin";
 
 interface Props {
     className?: string;
@@ -78,7 +79,8 @@ const Header: React.FC<Props> = ({className}) => {
                         </MenubarMenu>
                     </Menubar>
 
-                    <Button variant="outline">Увійти</Button>
+                    <ModalLogin/>
+                    <Modal/>
                 </div>
             </Container>
         </header>
