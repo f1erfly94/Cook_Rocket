@@ -4,7 +4,6 @@ import {
     Dialog,
     DialogClose,
     DialogContent,
-    DialogDescription,
     DialogFooter,
     DialogHeader,
     DialogTitle,
@@ -20,11 +19,9 @@ const ModalLogin: React.FC<Props> = ({ className }) => {
 
     const handleGoogleLogin = () => {
         console.log("Redirect to Google login");
-        // Додайте логіку для Google OAuth тут.
     };
 
     return (
-        <div className={className}>
             <Dialog open={isOpen} onOpenChange={setIsOpen}> {/* Встановлюємо стейт діалогу */}
                 <DialogTrigger>Увійти</DialogTrigger>
                 <DialogContent className="max-w-xl max-h-min">
@@ -32,34 +29,32 @@ const ModalLogin: React.FC<Props> = ({ className }) => {
                         <DialogTitle className="flex justify-center">Увійти в акаунт</DialogTitle>
                     </DialogHeader>
                     <form className="space-y-4">
-                        <DialogDescription>
-                            <div>
-                                <label
-                                    htmlFor="email"
-                                    className="block text-sm font-medium text-gray-600 mb-1 mt-4"
-                                >
-                                    Email
-                                </label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                    placeholder="Введіть ваш email"
-                                />
-                                <label
-                                    htmlFor="password"
-                                    className="block text-sm mt-4 font-medium text-gray-600 mb-1"
-                                >
-                                    Пароль
-                                </label>
-                                <input
-                                    type="password"
-                                    id="password"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                    placeholder="Введіть ваш пароль"
-                                />
-                            </div>
-                        </DialogDescription>
+                        <div>
+                            <label
+                                htmlFor="email"
+                                className="block text-sm font-medium text-gray-600 mb-1 mt-4"
+                            >
+                                Email
+                            </label>
+                            <input
+                                type="email"
+                                id="email"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                placeholder="Введіть ваш email"
+                            />
+                            <label
+                                htmlFor="password"
+                                className="block text-sm mt-4 font-medium text-gray-600 mb-1"
+                            >
+                                Пароль
+                            </label>
+                            <input
+                                type="password"
+                                id="password"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                placeholder="Введіть ваш пароль"
+                            />
+                        </div>
                         <div className="mt-4">
                             <button
                                 type="button"
@@ -74,9 +69,9 @@ const ModalLogin: React.FC<Props> = ({ className }) => {
                                 Увійти через Google
                             </button>
                         </div>
-                        <DialogDescription className="text-sm text-gray-600 text-center mt-4">
+                        <div className="text-sm text-gray-600 text-center mt-4">
                             Заповніть ці поля або скористайтесь входом через Google.
-                        </DialogDescription>
+                        </div>
                         <DialogFooter className="mt-4 flex justify-end space-x-4">
                             <DialogClose asChild>
                                 <button
@@ -95,8 +90,8 @@ const ModalLogin: React.FC<Props> = ({ className }) => {
                         </DialogFooter>
                     </form>
                 </DialogContent>
+
             </Dialog>
-        </div>
     );
 };
 
