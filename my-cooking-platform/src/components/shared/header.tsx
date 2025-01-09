@@ -12,7 +12,7 @@ import {
     MenubarShortcut,
     MenubarTrigger
 } from "@/components/ui/menubar";
-import Modal from "@/components/ui/modal";
+import Modal from "@/components/ui/modalRegister";
 import ModalLogin from "@/components/ui/modalLogin";
 
 interface Props {
