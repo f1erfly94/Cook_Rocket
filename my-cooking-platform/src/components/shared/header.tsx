@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/menubar";
 import Modal from "@/components/ui/modalRegister";
 import ModalLogin from "@/components/ui/modalLogin";
+import CustomSearch from "@/components/ui/customSearch";
 
 interface Props {
     className?: string;
@@ -23,14 +24,19 @@ const Header: React.FC<Props> = ({className}) => {
     return (
         <header className={cn('border border-b', className)}>
             <Container className={cn('flex items-center justify-between py-8', className)}>
-                <div className="flex items-center gap-4">
-                    <Link href="/">
+                <Link href="/">
+                    <div className="flex items-center gap-4">
+
                         <Image src="/logo.svg" alt="logo" width={100} height={100}/>
-                    </Link>
-                    <div>
-                        <h1 className="text-2xl uppercase font-black">Укусні Вкусняшки</h1>
-                        <p className="text-sm text-gray-400 leading-3">Таких ти ще не їв</p>
+
+                        <div>
+                            <h1 className="text-2xl uppercase font-black">Укусні Вкусняшки</h1>
+                            <p className="text-sm text-gray-400 leading-3">Таких ти ще не їв</p>
+                        </div>
                     </div>
+                </Link>
+                <div className="mx-10 flex-1">
+                    <CustomSearch/>
                 </div>
                 <div className="flex items-center gap-3">
                     <Menubar>
