@@ -17,7 +17,7 @@ const customSearch: React.FC<Props> = ({className}) => {
     useClickAway(ref, () => {
         setFocused(false);
     });
-
+    //test
     // useDebounce(
     //     async () => {
     //         try {
@@ -33,7 +33,7 @@ const customSearch: React.FC<Props> = ({className}) => {
     return (
         <>
             {focused &&  <div className="fixed top-0 left-0 bottom-0  right-0 bg-black/50 z-30"/>}
-
+K
                 <div
                     ref={ref}
                     className={cn('flex rounded-2xl flex-1 justify-between relative h-11 z-30' , className)}>
