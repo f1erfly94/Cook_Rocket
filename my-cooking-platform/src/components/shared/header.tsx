@@ -35,7 +35,6 @@ const Header: React.FC<Props> = ({className}) => {
                         </div>
                     </div>
                 </Link>
-                //search
                 <div className="mx-10 flex-1">
                     <CustomSearch/>
                 </div>
