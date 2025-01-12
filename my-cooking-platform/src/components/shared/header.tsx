@@ -29,7 +29,7 @@ const Header: React.FC<Props> = ({className}) => {
                     <div className="flex items-center gap-4">
 
                         <Image src="/logo.svg" alt="logo" width={100} height={100}/>
-
+//123
                         <div>
                             <h1 className="text-2xl uppercase font-black">Укусні Вкусняшки</h1>
                             <p className="text-sm text-gray-400 leading-3">Таких ти ще не їв</p>
