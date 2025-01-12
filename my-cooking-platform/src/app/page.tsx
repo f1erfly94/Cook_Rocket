@@ -7,10 +7,12 @@ interface Props {
 }
 
 const Page: React.FC<Props> = ({className}) => {
+
+
     return (
         <>
             <Container className={cn('flex items-center justify-between py-8', className)}>
-            <div>тест</div>
+            <div>головна сторінка</div>
             </Container>
         </>
     );
