@@ -15,7 +15,7 @@ interface Props {
 }
 
 const ModalLogin: React.FC<Props> = ({ className }) => {
-    const [isOpen, setIsOpen] = useState(false); // Стейт для відкриття/закриття діалогу
+    const [isOpen, setIsOpen] = useState(false); // Стейт для відриття/зариття діалогу
 
     const handleGoogleLogin = () => {
         console.log("Redirect to Google login");
@@ -26,7 +26,7 @@ const ModalLogin: React.FC<Props> = ({ className }) => {
                 <DialogTrigger>Увійти</DialogTrigger>
                 <DialogContent className="max-w-xl max-h-min">
                     <DialogHeader>
-                        <DialogTitle className="flex justify-center">Увійти в акаунт</DialogTitle>
+                        <DialogTitle className="flex justify-center">Увійти в ааунт</DialogTitle>
                     </DialogHeader>
                     <form className="space-y-4">
                         <div>
@@ -70,7 +70,7 @@ const ModalLogin: React.FC<Props> = ({ className }) => {
                             </button>
                         </div>
                         <div className="text-sm text-gray-600 text-center mt-4">
-                            Заповніть ці поля або скористайтесь входом через Google.
+                            Заповніть ці поля або сористайтесь входом через Google.
                         </div>
                         <DialogFooter className="mt-4 flex justify-end space-x-4">
                             <DialogClose asChild>
@@ -78,7 +78,7 @@ const ModalLogin: React.FC<Props> = ({ className }) => {
                                     type="button"
                                     className="px-4 py-2 bg-gray-300 text-black rounded-lg shadow-md hover:bg-gray-400 focus:ring-2 focus:ring-gray-300"
                                 >
-                                    Закрити
+                                    Зарити
                                 </button>
                             </DialogClose>
                             <button
