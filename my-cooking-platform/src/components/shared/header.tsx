@@ -15,6 +15,7 @@ import {
 import Modal from "@/components/ui/modalRegister";
 import ModalLogin from "@/components/ui/modalLogin";
 import CustomSearch from "@/components/ui/customSearch";
+import {Button} from "@/components/ui";
 
 interface Props {
     className?: string;
@@ -54,37 +55,9 @@ const Header: React.FC<Props> = ({className}) => {
                             </MenubarContent>
                         </MenubarMenu>
                     </Menubar>
-                    <Menubar>
-                        <MenubarMenu>
-                            <MenubarTrigger>Меню</MenubarTrigger>
-                            <MenubarContent>
-                                <MenubarItem>
-                                    1таба <MenubarShortcut>пес патрон</MenubarShortcut>K
-                                </MenubarItem>
-                                <MenubarItem> 2аба</MenubarItem>
-                                <MenubarSeparator/>
-                                <MenubarItem> 3таба</MenubarItem>
-                                <MenubarSeparator/>
-                                <MenubarItem> 4аба</MenubarItem>
-                            </MenubarContent>
-                        </MenubarMenu>
-                    </Menubar>
-                    <Menubar>
-                        <MenubarMenu>
-                            <MenubarTrigger>Меню</MenubarTrigger>
-                            <MenubarContent>
-                                <MenubarItem>
-                                    1таба <MenubarShortcut>пес патрон</MenubarShortcut>
-                                </MenubarItem>
-                                <MenubarItem> 2аба</MenubarItem>
-                                <MenubarSeparator/>
-                                <MenubarItem> 3таба</MenubarItem>
-                                <MenubarSeparator/>
-                                <MenubarItem> 4аба</MenubarItem>
-                            </MenubarContent>
-                        </MenubarMenu>
-                    </Menubar>
-
+                    <Link href="/add-recipe">
+                         <Button variant="default">Додати рецепт</Button>
+                    </Link>
                     <ModalLogin/>
                     <Modal/>
                 </div>

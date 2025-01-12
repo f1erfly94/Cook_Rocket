@@ -97,7 +97,9 @@ html {
 .scrollbar::-webkit-scrollbar-thumb:hover {
   background: #dbdadd;
 }
-
+.html{
+  scroll-behavior: smooth;
+}
 @layer base {
   * {
     @apply border-border;

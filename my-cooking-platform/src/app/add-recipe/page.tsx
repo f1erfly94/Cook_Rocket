@@ -1,20 +1,21 @@
 import React from 'react';
 import {Container} from "@/components/shared/container";
 import {cn} from "@/lib/utils";
-import Header from "@/components/shared/header";
+import RecipeForm from "@/components/shared/components/recipeForm";
 
 interface Props {
     className?: string;
 }
 
-const AddRecipe: React.FC<Props> = ({className}) => {
+const Page: React.FC<Props> = ({className}) => {
     return (
-        <Container className={cn('flex items-center justify-between py-8', className)}>
-            <Header/>
-            <div>сторінка з рецептами
+        <Container className={cn(' py-8', className)}>
+            <div className="min-h-screen ">
+                <h1 className="flex justify-center text-3xl font-bold text-center mb-6 ">Додавання рецепту</h1>
+                <RecipeForm/>
             </div>
         </Container>
     );
 };
 
-export default AddRecipe;
+export default Page;
