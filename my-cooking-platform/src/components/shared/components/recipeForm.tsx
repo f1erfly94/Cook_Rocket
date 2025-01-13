@@ -1,215 +1,188 @@
-'use client';
+// components/RecipeForm.tsx
+"use client"
+import {useForm} from 'react-hook-form';
+import {useEffect, useState} from 'react';
 
-import React, {useEffect, useRef, useState} from 'react';
-import {Button} from "@/components/ui";
+interface RecipeFormData {
+    name: string;
+    description: string;
+    ingredients: string;
+    steps: string;
+    prepTime: string;
+    servings: number;
+    categoryId: number;
+    images: FileList;
+    extraResources: string;
+}
+
+interface Category {
+    id: number;
+    name: string;
+}
 
 const RecipeForm = () => {
-    const [formData, setFormData] = useState({
-        recipeName: '',
-        description: '',
-        ingredients: '',
-        steps: '',
-        prepTime: '',
-        servings: '1',
-        dishType: '',
-        image: null as File | null,
-        creationDate: new Date().toLocaleDateString(),
-        isFavorite: false,
-        additionalResources: '',
-    });
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm<RecipeFormData>();
+    const [selectedImages, setSelectedImages] = useState<File[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
 
-    const descriptionRef = useRef<HTMLTextAreaElement | null>(null);
-    const ingredientsRef = useRef<HTMLTextAreaElement | null>(null);
-    const stepsRef = useRef<HTMLTextAreaElement | null>(null);
-    const additionalResourcesRef = useRef<HTMLTextAreaElement | null>(null);
+    // Завантаження категорій при завантаженні компонента
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await fetch('/api/categories'); // Заміни на свій API-роут для отримання категорій
+                if (!response.ok) {
+                    throw new Error('Failed to fetch categories');
+                }
+                const data = await response.json();
+                setCategories(data);
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+            }
+        };
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        const {name, value} = e.target;
-        setFormData({
-            ...formData,
-            [name]: value,
-        });
+        fetchCategories();
+    }, []);
+
+    const onSubmit = (data: RecipeFormData) => {
+        // Тут можна обробити відправку форми на сервер (API)
+        console.log(data);
     };
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files ? e.target.files[0] : null;
-        setFormData({
-            ...formData,
-            image: file,
-        });
-    };
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        console.log(formData);
-    };
-
-    const autoResize = (e: React.ChangeEvent<HTMLTextAreaElement>, ref: React.RefObject<HTMLTextAreaElement>) => {
-        if (ref.current) {
-            ref.current.style.height = 'auto'
-            ref.current.style.height = `${ref.current.scrollHeight}px`;
+        const files = e.target.files;
+        if (files) {
+            setSelectedImages(Array.from(files));
+            // Оновлюємо значення для поля images у react-hook-form
+            setValue('images', files);
         }
     };
 
-    useEffect(() => {
-        if (descriptionRef.current) descriptionRef.current.style.height = `${descriptionRef.current.scrollHeight}px`;
-        if (ingredientsRef.current) ingredientsRef.current.style.height = `${ingredientsRef.current.scrollHeight}px`;
-        if (stepsRef.current) stepsRef.current.style.height = `${stepsRef.current.scrollHeight}px`;
-        if (additionalResourcesRef.current) additionalResourcesRef.current.style.height = `${additionalResourcesRef.current.scrollHeight}px`;
-    }, []);
-
     return (
-        <form onSubmit={handleSubmit} className="space-y-4 p-6 max-w-2xl mx-auto bg-white rounded-lg shadow-lg">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-lg mx-auto p-6 border rounded-lg shadow-lg bg-white">
+            {/* Назва рецепту */}
             <div>
-                <label htmlFor="recipeName" className="block font-semibold">Назва рецепту:</label>
+                <label htmlFor="name" className="block text-sm font-semibold text-gray-700">Назва рецепту</label>
                 <input
+                    id="name"
                     type="text"
-                    id="recipeName"
-                    name="recipeName"
-                    value={formData.recipeName}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md"
-                    required
+                    placeholder="Введіть назву рецепту"
+                    {...register('name', { required: 'Назва рецепту обов\'язкова' })}
+                    className="mt-1 p-2 border border-gray-300 rounded-md w-full"
                 />
+                {errors.name && <span className="text-red-500 text-sm">{errors.name.message}</span>}
             </div>
 
+            {/* Опис */}
             <div>
-                <label htmlFor="description" className="block font-semibold">Опис:</label>
+                <label htmlFor="description" className="block text-sm font-semibold text-gray-700">Опис</label>
                 <textarea
-                    ref={descriptionRef}
                     id="description"
-                    name="description"
-                    value={formData.description}
-                    onChange={(e) => {
-                        handleChange(e);
-                        autoResize(e, descriptionRef);
-                    }}
-                    className="w-full max-h-[200px] px-4 py-2 border border-gray-300 rounded-md"
-                    rows={4}
-                    required
+                    placeholder="Введіть опис рецепту"
+                    {...register('description')}
+                    className="mt-1 p-2 border border-gray-300 rounded-md w-full"
                 />
             </div>
 
+            {/* Інгредієнти */}
             <div>
-                <label htmlFor="ingredients" className="  block font-semibold">Інгредієнти:</label>
+                <label htmlFor="ingredients" className="block text-sm font-semibold text-gray-700">Інгредієнти</label>
                 <textarea
-                    ref={ingredientsRef}
                     id="ingredients"
-                    name="ingredients"
-                    value={formData.ingredients}
-                    onChange={(e) => {
-                        handleChange(e);
-                        autoResize(e, ingredientsRef);
-                    }}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md max-h-[200px] pt-4"
-                    rows={4}
-                    required
+                    placeholder="Введіть інгредієнти"
+                    {...register('ingredients')}
+                    className="mt-1 p-2 border border-gray-300 rounded-md w-full"
                 />
             </div>
 
+            {/* Кроки */}
             <div>
-                <label htmlFor="steps" className="block font-semibold">Кроки:</label>
+                <label htmlFor="steps" className="block text-sm font-semibold text-gray-700">Кроки</label>
                 <textarea
-                    ref={stepsRef}
                     id="steps"
-                    name="steps"
-                    value={formData.steps}
-                    onChange={(e) => {
-                        handleChange(e);
-                        autoResize(e, stepsRef);
-                    }}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md max-h-[200px] "
-                    rows={4}
-                    required
+                    placeholder="Опишіть кроки приготування"
+                    {...register('steps')}
+                    className="mt-1 p-2 border border-gray-300 rounded-md w-full"
                 />
             </div>
 
+            {/* Час приготування */}
             <div>
-                <label htmlFor="prepTime" className="block font-semibold">Час приготування:</label>
+                <label htmlFor="prepTime" className="block text-sm font-semibold text-gray-700">Час приготування</label>
                 <input
-                    type="text"
                     id="prepTime"
-                    name="prepTime"
-                    value={formData.prepTime}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md"
-                    required
+                    type="text"
+                    placeholder="Введіть час приготування"
+                    {...register('prepTime')}
+                    className="mt-1 p-2 border border-gray-300 rounded-md w-full"
                 />
             </div>
 
+            {/* Кількість порцій */}
             <div>
-                <label htmlFor="servings" className="block font-semibold">Кількість порцій:</label>
+                <label htmlFor="servings" className="block text-sm font-semibold text-gray-700">Кількість порцій</label>
                 <input
-                    type="number"
                     id="servings"
-                    name="servings"
-                    value={formData.servings}
-                    onChange={(e) => {
-                        const value = parseInt(e.target.value, 10);
-                        setFormData({
-                            ...formData,
-                            servings: isNaN(value) ? '1' : String(Math.max(1, value)),
-                        });
-                    }}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md"
-                    min="1"
-                    step="1"
-                    required
+                    type="number"
+                    placeholder="Кількість порцій"
+                    {...register('servings', { required: 'Кількість порцій обов\'язкова' })}
+                    className="mt-1 p-2 border border-gray-300 rounded-md w-full"
                 />
+                {errors.servings && <span className="text-red-500 text-sm">{errors.servings.message}</span>}
             </div>
 
-
+            {/* Тип страви */}
             <div>
-                <label htmlFor="dishType" className="block font-semibold">Тип страви:</label>
+                <label htmlFor="categoryId" className="block text-sm font-semibold text-gray-700">Тип страви</label>
                 <select
-                    id="dishType"
-                    name="dishType"
-                    value={formData.dishType}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md"
-                    required
+                    id="categoryId"
+                    {...register('categoryId', { required: 'Тип страви обов\'язковий' })}
+                    className="mt-1 p-2 border border-gray-300 rounded-md w-full"
                 >
-                    <option value="">Оберіть тип страви</option>
-                    <option value="main">Основна</option>
-                    <option value="dessert">Десерт</option>
-                    <option value="salad">Салат</option>
+                    {categories.map((category) => (
+                        <option key={category.id} value={category.id}>
+                            {category.name}
+                        </option>
+                    ))}
                 </select>
+                {errors.categoryId && <span className="text-red-500 text-sm">{errors.categoryId.message}</span>}
             </div>
 
+            {/* Картинки */}
             <div>
-                <label htmlFor="image" className="block font-semibold">Картинки:</label>
+                <label htmlFor="images" className="block text-sm font-semibold text-gray-700">Картинки</label>
                 <input
+                    id="images"
                     type="file"
-                    id="image"
-                    name="image"
+                    accept="image/*"
+                    multiple
                     onChange={handleImageChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                    className="mt-1 p-2 border border-gray-300 rounded-md w-full"
                 />
+                {selectedImages.length === 0 && (
+                    <span className="text-red-500 text-sm">Додайте хоча б однин файл</span>
+                )}
             </div>
-            
+
+            {/* Додаткові ресурси */}
             <div>
-                <label htmlFor="additionalResources" className="block font-semibold">Додаткові ресурси:</label>
+                <label htmlFor="extraResources" className="block text-sm font-semibold text-gray-700">Додаткові ресурси</label>
                 <textarea
-                    ref={additionalResourcesRef}
-                    id="additionalResources"
-                    name="additionalResources"
-                    value={formData.additionalResources}
-                    onChange={(e) => {
-                        handleChange(e);
-                        autoResize(e, additionalResourcesRef);
-                    }}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md max-h-[200px]"
-                    rows={4}
+                    id="extraResources"
+                    placeholder="Введіть додаткові ресурси"
+                    {...register('extraResources')}
+                    className="mt-1 p-2 border border-gray-300 rounded-md w-full"
                 />
             </div>
-            <Button  className="w-full">
+
+            {/* Кнопка Додати рецепт */}
+            <button
+                type="submit"
+                className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md"
+            >
                 Додати рецепт
-            </Button>
+            </button>
         </form>
     );
 };
 
 export default RecipeForm;
-
-
-

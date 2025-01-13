@@ -14,8 +14,7 @@ async function main() {
     'Гарніри',
     'Десерти',
     'Випічка',
-    'Напої',
-     'Кава'
+    'Напої'
   ];
 
   for (const name of categories) {
