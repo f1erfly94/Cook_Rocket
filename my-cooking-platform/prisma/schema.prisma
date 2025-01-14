@@ -35,27 +35,18 @@ model Recipe {
   name             String
   description      String
   ingredients      String
-  steps            String
-  prepTime         String
-  cookTime         String
-  totalTime        String
+  steps            String?
+  prepTime         String?
+  cookTime         String?
+  totalTime        String?
   servings         Int
   categoryId       Int
   category         Category       @relation(fields: [categoryId], references: [id])
   image            String?
-  additionalImages RecipeImage[]
   authorId         Int
   author           User           @relation(fields: [authorId], references: [id])
   dateAdded        DateTime       @default(now())
-  favorite         Boolean        @default(false)
   extraResources   String?
   updatedAt        DateTime       @updatedAt
 }
 
-model RecipeImage {
-  id         Int      @id @default(autoincrement())
-  url        String
-  recipeId   Int
-  recipe     Recipe   @relation(fields: [recipeId], references: [id])
-  createdAt  DateTime @default(now())
-}
