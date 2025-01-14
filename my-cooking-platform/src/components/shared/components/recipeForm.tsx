@@ -1,188 +1,242 @@
-// components/RecipeForm.tsx
-"use client"
-import {useForm} from 'react-hook-form';
+'use client'
 import {useEffect, useState} from 'react';
 
-interface RecipeFormData {
-    name: string;
-    description: string;
-    ingredients: string;
-    steps: string;
-    prepTime: string;
-    servings: number;
-    categoryId: number;
-    images: FileList;
-    extraResources: string;
-}
+export default function CreateRecipeForm() {
+    const [formData, setFormData] = useState({
+        name: '',
+        description: '',
+        ingredients: '',
+        steps: '',
+        prepTime: '',
+        cookTime: '',
+        totalTime: '',
+        servings: '1', // Зберігаємо як рядок
+        categoryId: '', // Вибрана категорія
+        authorId: '1', // це можна отримати через аутентифікацію
+        image: '',
+        extraResources: '',
+    });
 
-interface Category {
-    id: number;
-    name: string;
-}
+    const [categories, setCategories] = useState([]);
 
-const RecipeForm = () => {
-    const { register, handleSubmit, setValue, formState: { errors } } = useForm<RecipeFormData>();
-    const [selectedImages, setSelectedImages] = useState<File[]>([]);
-    const [categories, setCategories] = useState<Category[]>([]);
-
-    // Завантаження категорій при завантаженні компонента
     useEffect(() => {
         const fetchCategories = async () => {
-            try {
-                const response = await fetch('/api/categories'); // Заміни на свій API-роут для отримання категорій
-                if (!response.ok) {
-                    throw new Error('Failed to fetch categories');
-                }
+            const response = await fetch('/api/categories');
+            if (response.ok) {
                 const data = await response.json();
                 setCategories(data);
-            } catch (error) {
-                console.error('Error fetching categories:', error);
             }
         };
 
         fetchCategories();
     }, []);
 
-    const onSubmit = (data: RecipeFormData) => {
-        // Тут можна обробити відправку форми на сервер (API)
-        console.log(data);
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    ) => {
+        const { name, value, type } = e.target;
+
+        setFormData((prev) => ({
+            ...prev,
+            [name]: type === 'number' ? Number(value) || 0 : value, // Приводимо до числа, якщо поле є числовим
+        }));
     };
 
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const files = e.target.files;
-        if (files) {
-            setSelectedImages(Array.from(files));
-            // Оновлюємо значення для поля images у react-hook-form
-            setValue('images', files);
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        // Форматування даних для запиту
+        const formattedData = {
+            ...formData,
+            authorId: parseInt(formData.authorId, 10),
+            categoryId: parseInt(formData.categoryId, 10),
+            servings: parseInt(formData.servings, 10),
+            cookTime: formData.cookTime || null, // Перетворюємо пусті рядки на null
+            prepTime: formData.prepTime || null,
+            totalTime: formData.totalTime || null,
+            extraResources: formData.extraResources || null,
+            image: formData.image || null,
+            steps: formData.steps || null,
+        };
+
+        try {
+            const response = await fetch('/api/recipes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formattedData),
+            });
+
+            if (response.ok) {
+                alert('Recipe created successfully!');
+            } else {
+                const error = await response.json();
+                console.error(error);
+                alert(`Error: ${error.error || 'Failed to create recipe'}`);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Something went wrong!');
         }
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-lg mx-auto p-6 border rounded-lg shadow-lg bg-white">
-            {/* Назва рецепту */}
-            <div>
-                <label htmlFor="name" className="block text-sm font-semibold text-gray-700">Назва рецепту</label>
+        <form onSubmit={handleSubmit} className="w-full max-w-xl mx-auto p-6 bg-gray-100 rounded-lg shadow-lg">
+            <div className="mb-4">
+                <label htmlFor="name" className="block text-lg font-medium text-gray-700">Recipe Name</label>
                 <input
-                    id="name"
                     type="text"
-                    placeholder="Введіть назву рецепту"
-                    {...register('name', { required: 'Назва рецепту обов\'язкова' })}
-                    className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="Recipe name"
+                    required
+                    className="w-full p-3 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                {errors.name && <span className="text-red-500 text-sm">{errors.name.message}</span>}
             </div>
 
-            {/* Опис */}
-            <div>
-                <label htmlFor="description" className="block text-sm font-semibold text-gray-700">Опис</label>
+            <div className="mb-4">
+                <label htmlFor="description" className="block text-lg font-medium text-gray-700">Description</label>
                 <textarea
                     id="description"
-                    placeholder="Введіть опис рецепту"
-                    {...register('description')}
-                    className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                    name="description"
+                    value={formData.description}
+                    onChange={handleChange}
+                    placeholder="Recipe description"
+                    required
+                    className="w-full p-3 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
             </div>
 
-            {/* Інгредієнти */}
-            <div>
-                <label htmlFor="ingredients" className="block text-sm font-semibold text-gray-700">Інгредієнти</label>
+            <div className="mb-4">
+                <label htmlFor="ingredients" className="block text-lg font-medium text-gray-700">Ingredients</label>
                 <textarea
                     id="ingredients"
-                    placeholder="Введіть інгредієнти"
-                    {...register('ingredients')}
-                    className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                    name="ingredients"
+                    value={formData.ingredients}
+                    onChange={handleChange}
+                    placeholder="Ingredients"
+                    required
+                    className="w-full p-3 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
             </div>
 
-            {/* Кроки */}
-            <div>
-                <label htmlFor="steps" className="block text-sm font-semibold text-gray-700">Кроки</label>
+            <div className="mb-4">
+                <label htmlFor="steps" className="block text-lg font-medium text-gray-700">Steps</label>
                 <textarea
                     id="steps"
-                    placeholder="Опишіть кроки приготування"
-                    {...register('steps')}
-                    className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                    name="steps"
+                    value={formData.steps}
+                    onChange={handleChange}
+                    placeholder="Steps"
+                    required
+                    className="w-full p-3 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
             </div>
 
-            {/* Час приготування */}
-            <div>
-                <label htmlFor="prepTime" className="block text-sm font-semibold text-gray-700">Час приготування</label>
+            <div className="mb-4">
+                <label htmlFor="prepTime" className="block text-lg font-medium text-gray-700">Preparation Time</label>
                 <input
-                    id="prepTime"
                     type="text"
-                    placeholder="Введіть час приготування"
-                    {...register('prepTime')}
-                    className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                    id="prepTime"
+                    name="prepTime"
+                    value={formData.prepTime}
+                    onChange={handleChange}
+                    placeholder="Preparation time"
+                    className="w-full p-3 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
             </div>
 
-            {/* Кількість порцій */}
-            <div>
-                <label htmlFor="servings" className="block text-sm font-semibold text-gray-700">Кількість порцій</label>
+            <div className="mb-4">
+                <label htmlFor="cookTime" className="block text-lg font-medium text-gray-700">Cooking Time</label>
                 <input
-                    id="servings"
-                    type="number"
-                    placeholder="Кількість порцій"
-                    {...register('servings', { required: 'Кількість порцій обов\'язкова' })}
-                    className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                    type="text"
+                    id="cookTime"
+                    name="cookTime"
+                    value={formData.cookTime}
+                    onChange={handleChange}
+                    placeholder="Cooking time"
+                    className="w-full p-3 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                {errors.servings && <span className="text-red-500 text-sm">{errors.servings.message}</span>}
             </div>
 
-            {/* Тип страви */}
-            <div>
-                <label htmlFor="categoryId" className="block text-sm font-semibold text-gray-700">Тип страви</label>
+            <div className="mb-4">
+                <label htmlFor="totalTime" className="block text-lg font-medium text-gray-700">Total Time</label>
+                <input
+                    type="text"
+                    id="totalTime"
+                    name="totalTime"
+                    value={formData.totalTime}
+                    onChange={handleChange}
+                    placeholder="Total time"
+                    className="w-full p-3 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+            </div>
+
+            <div className="mb-4">
+                <label htmlFor="servings" className="block text-lg font-medium text-gray-700">Servings</label>
+                <input
+                    type="number"
+                    id="servings"
+                    name="servings"
+                    value={formData.servings}
+                    onChange={handleChange}
+                    placeholder="Number of servings"
+                    required
+                    className="w-full p-3 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+            </div>
+
+            <div className="mb-4">
+                <label htmlFor="image" className="block text-lg font-medium text-gray-700">Image URL</label>
+                <input
+                    type="text"
+                    id="image"
+                    name="image"
+                    value={formData.image}
+                    onChange={handleChange}
+                    placeholder="Image URL"
+                    className="w-full p-3 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+            </div>
+            <div className="mb-4">
+                <label htmlFor="categoryId" className="block text-lg font-medium text-gray-700">Category</label>
                 <select
                     id="categoryId"
-                    {...register('categoryId', { required: 'Тип страви обов\'язковий' })}
-                    className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                    name="categoryId"
+                    value={formData.categoryId}
+                    onChange={handleChange}
+                    required
+                    className="w-full p-3 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
-                    {categories.map((category) => (
+                    <option value="" disabled>Select a category</option>
+                    {categories.map((category: { id: number; name: string }) => (
                         <option key={category.id} value={category.id}>
                             {category.name}
                         </option>
                     ))}
                 </select>
-                {errors.categoryId && <span className="text-red-500 text-sm">{errors.categoryId.message}</span>}
             </div>
-
-            {/* Картинки */}
-            <div>
-                <label htmlFor="images" className="block text-sm font-semibold text-gray-700">Картинки</label>
-                <input
-                    id="images"
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    onChange={handleImageChange}
-                    className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-                />
-                {selectedImages.length === 0 && (
-                    <span className="text-red-500 text-sm">Додайте хоча б однин файл</span>
-                )}
-            </div>
-
-            {/* Додаткові ресурси */}
-            <div>
-                <label htmlFor="extraResources" className="block text-sm font-semibold text-gray-700">Додаткові ресурси</label>
+            <div className="mb-4">
+                <label htmlFor="extraResources" className="block text-lg font-medium text-gray-700">Extra
+                    Resources</label>
                 <textarea
                     id="extraResources"
-                    placeholder="Введіть додаткові ресурси"
-                    {...register('extraResources')}
-                    className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                    name="extraResources"
+                    value={formData.extraResources}
+                    onChange={handleChange}
+                    placeholder="Extra resources (optional)"
+                    className="w-full p-3 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
             </div>
 
-            {/* Кнопка Додати рецепт */}
-            <button
-                type="submit"
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md"
-            >
-                Додати рецепт
+            <button type="submit"
+                    className="w-full p-3 mt-6 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                Create Recipe
             </button>
         </form>
-    );
-};
-
-export default RecipeForm;
+    )
+        ;
+}
